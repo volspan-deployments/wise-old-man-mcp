@@ -38,6 +38,7 @@ async def search_players(query: str) -> dict:
     """Search for Old School RuneScape players on Wise Old Man by username.
     Use this when the user wants to find a player, look up a username, or get player suggestions.
     Returns a list of matching players."""
+    _track("search_players")
     normalized_query = query.strip().lower()
     async with httpx.AsyncClient() as client:
         try:
@@ -66,6 +67,7 @@ async def search_groups(query: str) -> dict:
     """Search for groups on Wise Old Man by name.
     Use this when the user wants to find a clan, group, or community by name.
     Returns a list of matching groups."""
+    _track("search_groups")
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(
@@ -94,6 +96,7 @@ async def upload_profile_image(image_path: str) -> dict:
     """Upload a profile image for a Wise Old Man player or group.
     The image will be automatically resized to 120x120 pixels and stored in Cloudflare R2.
     Use this when the user wants to set or update a profile/avatar picture."""
+    _track("upload_profile_image")
     if not os.path.exists(image_path):
         return {"success": False, "error": f"File not found: {image_path}"}
     try:
@@ -124,6 +127,7 @@ async def upload_banner_image(image_path: str) -> dict:
     """Upload a banner image for a Wise Old Man group or profile page.
     The image will be automatically resized to 1184x144 pixels and stored in Cloudflare R2.
     Use this when the user wants to set or update a group or profile banner."""
+    _track("upload_banner_image")
     if not os.path.exists(image_path):
         return {"success": False, "error": f"File not found: {image_path}"}
     try:
@@ -153,6 +157,7 @@ async def upload_banner_image(image_path: str) -> dict:
 async def get_player_gains(username: str) -> dict:
     """Navigate to or retrieve the gains page for a specific player.
     Use this when the user wants to see XP gains, progress, or skill improvements for a player by username."""
+    _track("get_player_gains")
     normalized_username = username.strip().lower()
     async with httpx.AsyncClient() as client:
         try:
@@ -182,6 +187,7 @@ async def get_community_links(resource: str) -> dict:
     Use this when the user asks where to find the source code, how to join the community,
     how to support the project, or where to read the API docs.
     resource must be one of: 'github', 'discord', 'patreon', 'twitter', 'docs', 'flags'."""
+    _track("get_community_links")
     resource_lower = resource.strip().lower()
     if resource_lower not in COMMUNITY_LINKS:
         return {
@@ -212,6 +218,7 @@ async def get_leaderboards(type: Optional[str] = "top") -> dict:
     Supports top players, EHP (Efficient Hours Played), and EHB (Efficient Hours Bossed) leaderboards.
     Use this when the user wants to see ranked players or efficiency-based rankings.
     type must be one of: 'top', 'ehp', 'ehb'."""
+    _track("get_leaderboards")
     leaderboard_type = (type or "top").strip().lower()
     valid_types = ["top", "ehp", "ehb"]
     if leaderboard_type not in valid_types:
@@ -262,6 +269,7 @@ async def get_leaderboards(type: Optional[str] = "top") -> dict:
 
 @mcp.tool()
 async def get_recent_searches(
+    _track("get_recent_searches")
     action: Optional[str] = "list",
     term: Optional[str] = None,
 ) -> dict:
